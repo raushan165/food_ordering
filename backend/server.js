@@ -149,7 +149,8 @@ else if (SERVICE_NAME === 'menu-service') {
           { name: 'Butter Chicken & Naan', description: 'Creamy tomato gravy with naan', price: 349, imageUrl: 'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&q=80&w=800', category: 'Main Course' },
           { name: 'Paneer Tikka Masala', description: 'Grilled cottage cheese cubes', price: 299, imageUrl: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&q=80&w=800', category: 'Vegetarian' },
           { name: 'Hyderabadi Biryani', description: 'Aromatic basmati rice with chicken', price: 249, imageUrl: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&q=80&w=800', category: 'Biryani' },
-          { name: 'Butter Paneer Masala with Naan', description: 'Rich and creamy paneer with soft garlic naan', price: 320, imageUrl: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&q=80&w=800', category: 'Vegetarian' }
+          { name: 'Butter Paneer Masala with Naan', description: 'Rich and creamy paneer with soft garlic naan', price: 320, imageUrl: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&q=80&w=800', category: 'Vegetarian' },
+          { name: 'Garlic Naan & Dal Makhani', description: 'Slow-cooked black lentils with buttery garlic naan', price: 220, imageUrl: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&q=80&w=800', category: 'Vegetarian' }
         ];
         await FoodItem.insertMany(dummyData);
         await redisClient.del('menu:all');
