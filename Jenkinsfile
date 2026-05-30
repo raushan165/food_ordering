@@ -19,7 +19,7 @@ pipeline {
                 echo 'Building Next.js Webapp Docker Image...'
                 // Build the image using the Dockerfile
                 script {
-                    sh 'docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} -t ${DOCKER_IMAGE}:latest .'
+                    sh 'docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} -t ${DOCKER_IMAGE}:latest ./webapp'
                 }
             }
         }

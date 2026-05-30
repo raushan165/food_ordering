@@ -23,7 +23,7 @@ jobs:
 
       - name: Build Next.js Webapp Image
         run: |
-          docker build -t food-ordering-webapp:latest .
+          docker build -t food-ordering-webapp:latest ./webapp
 
       - name: Test Docker Image
         run: |
