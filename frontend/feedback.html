@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Feedback - TastyEats</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-danger shadow">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">🍔 TastyEats</a>
+            <a href="index.html" class="text-white text-decoration-none">Back to Menu</a>
+        </div>
+    </nav>
+
+    <div class="container mt-5" style="max-width: 500px;">
+        <h2 class="mb-4">Submit Feedback</h2>
+        <div class="card p-4 shadow-sm border-0">
+            <div class="mb-3">
+                <label>Message</label>
+                <textarea id="fb-msg" class="form-control" rows="4" placeholder="How was your food?"></textarea>
+            </div>
+            <button onclick="submitFeedback()" class="btn btn-danger w-100">Send Feedback</button>
+        </div>
+    </div>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user) window.location.href = 'auth.html';
+
+        async function submitFeedback() {
+            const message = document.getElementById('fb-msg').value;
+            if (!message) return alert('Enter a message');
+
+            const payload = { name: user.name, email: user.email, message };
+            try {
+                const res = await fetch('/api/users/feedback', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (res.ok) {
+                    alert('Thanks for your feedback!');
+                    window.location.href = 'index.html';
+                }
+            } catch (e) { alert('Failed to submit'); }
+        }
+    </script>
+</body>
+</html>

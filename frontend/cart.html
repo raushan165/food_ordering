@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cart - TastyEats</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-danger shadow">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">🍔 TastyEats</a>
+            <div class="d-flex text-white align-items-center gap-3">
+                <a href="index.html" class="text-white text-decoration-none">Back to Menu</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5" style="max-width: 600px;">
+        <h2 class="mb-4">Your Cart</h2>
+        <div class="card p-4 shadow-sm border-0">
+            <div id="cart-items"></div>
+            <hr>
+            <h4 class="text-end fw-bold text-danger">Total: ₹<span id="cart-total">0</span></h4>
+            
+            <div class="mt-4">
+                <label class="form-label">Delivery Address</label>
+                <textarea id="address" class="form-control" rows="3" placeholder="Enter your full address"></textarea>
+            </div>
+            <button onclick="placeOrder()" class="btn btn-success w-100 mt-4 fs-5 fw-bold">Place Order</button>
+        </div>
+    </div>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem('user'));
+        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        if (!user) window.location.href = 'auth.html';
+
+        function renderCart() {
+            const container = document.getElementById('cart-items');
+            if (cart.length === 0) {
+                container.innerHTML = '<p class="text-muted">Cart is empty.</p>';
+                document.getElementById('cart-total').innerText = '0';
+                return;
+            }
+            container.innerHTML = cart.map((i, index) => `
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span><b>${i.qty}x</b> ${i.name}</span>
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="fw-bold">₹${i.price * i.qty}</span>
+                        <button class="btn btn-sm btn-outline-danger" onclick="removeItem(${index})">Remove</button>
+                    </div>
+                </div>
+            `).join('');
+            const total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+            document.getElementById('cart-total').innerText = total;
+        }
+
+        function removeItem(index) {
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+        }
+
+        async function placeOrder() {
+            if (cart.length === 0) return alert('Cart is empty!');
+            const address = document.getElementById('address').value;
+            if (!address) return alert('Enter an address');
+
+            const total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+            const payload = {
+                userEmail: user.email,
+                customerName: user.name,
+                customerAddress: address,
+                items: cart,
+                totalAmount: total
+            };
+
+            try {
+                const res = await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (res.ok) {
+                    alert('Order Placed Successfully!');
+                    localStorage.removeItem('cart');
+                    window.location.href = 'history.html';
+                } else alert('Order failed');
+            } catch (e) { alert('Error placing order'); }
+        }
+
+        renderCart();
+    </script>
+</body>
+</html>
