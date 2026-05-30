@@ -16,7 +16,9 @@ const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
 // MONGODB CONNECTION & SCHEMAS
 // ---------------------------------------------------------------------------
 mongoose.connect(MONGODB_URI)
-  .then(() => console.log(`[${SERVICE_NAME}] Connected to MongoDB`))
+  .then(() => {
+    console.log(`[${SERVICE_NAME}] Connected to MongoDB`);
+  })
   .catch(err => console.error('MongoDB error:', err));
 
 // 1. User Schema
@@ -139,17 +141,26 @@ else if (SERVICE_NAME === 'menu-service') {
     }
   });
 
-  app.post('/api/menu/seed', async (req, res) => {
-    const dummyData = [
-      { name: 'Butter Chicken & Naan', description: 'Creamy tomato gravy with naan', price: 349, imageUrl: '/masala_dosa.png', category: 'Main Course' }, // Placeholder image
-      { name: 'Paneer Tikka Masala', description: 'Grilled cottage cheese cubes', price: 299, imageUrl: '/masala_dosa.png', category: 'Vegetarian' },
-      { name: 'Masala Dosa', description: 'Crispy rice crepe filled with potato', price: 149, imageUrl: '/masala_dosa.png', category: 'South Indian' }
-    ];
-    await FoodItem.deleteMany({});
-    const inserted = await FoodItem.insertMany(dummyData);
-    await redisClient.del('menu:all');
-    res.json({ message: 'Menu seeded', data: inserted });
-  });
+  async function autoSeed() {
+    try {
+      const count = await FoodItem.countDocuments();
+      if (count === 0) {
+        const dummyData = [
+          { name: 'Butter Chicken & Naan', description: 'Creamy tomato gravy with naan', price: 349, imageUrl: 'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&q=80&w=800', category: 'Main Course' },
+          { name: 'Paneer Tikka Masala', description: 'Grilled cottage cheese cubes', price: 299, imageUrl: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&q=80&w=800', category: 'Vegetarian' },
+          { name: 'Hyderabadi Biryani', description: 'Aromatic basmati rice with chicken', price: 249, imageUrl: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&q=80&w=800', category: 'Biryani' }
+        ];
+        await FoodItem.insertMany(dummyData);
+        await redisClient.del('menu:all');
+        console.log('Database auto-seeded with Indian food items.');
+      }
+    } catch (err) {
+      console.error('Failed to auto-seed', err);
+    }
+  }
+  
+  // Call it immediately after defining it
+  autoSeed();
 }
 
 // ---------------------------------------------------------------------------

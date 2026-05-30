@@ -22,9 +22,6 @@
 
     <div class="container mt-5">
         <h2 class="mb-4 text-center">Dashboard / Menu</h2>
-        <div class="text-center mb-4">
-            <button onclick="seedMenu()" class="btn btn-outline-danger">Seed Database (Mock Data)</button>
-        </div>
         <div id="menu-container" class="row g-4"></div>
     </div>
 
@@ -67,12 +64,6 @@
 
         function updateCartCount() {
             document.getElementById('cart-count').innerText = cart.reduce((sum, item) => sum + item.qty, 0);
-        }
-
-        async function seedMenu() {
-            await fetch('/api/menu/seed', { method: 'POST' });
-            alert('Seeded!');
-            fetchMenu();
         }
 
         function logout() {
