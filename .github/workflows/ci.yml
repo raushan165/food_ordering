@@ -21,9 +21,9 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build Next.js Webapp Image
+      - name: Build Backend Microservices Image
         run: |
-          docker build -t food-ordering-webapp:latest ./webapp
+          docker build -t food-ordering-webapp:latest ./backend
 
       - name: Test Docker Image
         run: |
